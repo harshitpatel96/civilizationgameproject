@@ -42,7 +42,7 @@ player(C, player) :- color(C).
 :- tile(T, player, C1), at(T, mountains).
 
 %players have a minimum starting distance between them
-:- dim(X1),dim(Y1),dim(X2),dim(Y2),tile((X1,Y1), player, C1),tile((X2,Y2), player, C2), X1!=X2;Y1!=Y2 , (X2- X1)*2 + (Y2- Y1)*2 < dist_blocks_squared. 
+:- dim(X1),dim(Y1),dim(X2),dim(Y2),tile((X1,Y1), player, C1),tile((X2,Y2), player, C2), X1!=X2;Y1!=Y2 , (X2- X1)*2 + (Y2- Y1)*2 > dist_blocks_squared. 
 
 % Define
 step(0,1).
