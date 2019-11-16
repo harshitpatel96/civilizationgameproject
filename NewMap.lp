@@ -62,6 +62,9 @@ adjacent(T1, T2, (DX,DY))
 :- not width*width/4 { at(T, water) } width*width/3.
 :- not width*width/10 { at(T1, mountains) } width*width/10.
 
+move(C1,S,E) :- map(S),map(E),tile(S,player,C1),adjacent(S,E,Direction),not at(E,water).
 
-#show tile/3.
-#show at/2.
+0 { player : move(C1,S,E) }.
+
+
+#show move/3.
