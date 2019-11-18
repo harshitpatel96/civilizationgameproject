@@ -8,14 +8,17 @@ Created on Wed Nov 13 15:04:13 2019
 import clingo
 import numpy as np
 mapofworld = None
+
 class Map:
     def __init__(self):
         self.size = 5
         self.solution = None
-        
         ctl = clingo.Control()
         ctl.load("NewMap.lp")
-        ctl.ground([("base", [])])
+        ctl.configuration.solver.seed = 500 
+        parts = []
+        parts.append('at((1, 2), Mountain)')
+        ctl.ground([('base', [])])
         ctl.solve(on_model=self.__on_model)
     
     def __on_model(self, m):
@@ -42,5 +45,48 @@ class Map:
         
 Map()
 
-print(mapofworld)
-            
+mowN = np.array([['None' for i in range(mapofworld.shape[0])] for j in range(mapofworld.shape[1])], dtype=object)
+playerpos = [(i, j) for i in range(mapofworld.shape[0]) for j in range(mapofworld.shape[1]) if 'player' in mapofworld[i, j]]
+
+for i in playerpos:
+    mowN[i[0],i[1]] = mapofworld[i[0], i[1]]
+    try:
+        mowN[i[0]+1,i[1]] = mapofworld[i[0]+1, i[1]]
+    except:
+        None
+    try:
+        if i[0]-1 >= 0:
+            mowN[i[0]-1,i[1]] = mapofworld[i[0]-1, i[1]]
+    except:
+        None
+    try:
+        mowN[i[0]+1,i[1]+1] = mapofworld[i[0]+1, i[1]+1]
+    except:
+        None
+    try:
+        if i[1]-1 >= 0:
+            mowN[i[0]+1,i[1]-1] = mapofworld[i[0]+1, i[1]-1]
+    except:
+        None
+    try:
+        if i[0]-1 >= 0 and i[1]-1 >= 0:
+            mowN[i[0]-1,i[1]-1] = mapofworld[i[0]-1, i[1]-1]
+    except:
+        None
+    try:
+        if i[0]-1 >= 0:
+            mowN[i[0]-1,i[1]+1] = mapofworld[i[0]-1, i[1]+1]
+    except:
+        None
+    try:
+        mowN[i[0],i[1]+1] = mapofworld[i[0], i[1]+1]
+    except:
+        None
+    try:
+        if i[1]-1 >= 0:
+            mowN[i[0],i[1]-1] = mapofworld[i[0], i[1]-1]
+    except:
+        None
+        
+hiddenmap = np.array([[str(mowN[i, j]) for i in range(mapofworld.shape[0])] for j in range(mapofworld.shape[1])])
+         
