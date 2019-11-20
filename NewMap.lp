@@ -1,4 +1,4 @@
-#const width=5.
+#const width=10.
 #const number_of_moves=4.
 #const number_of_players=2.
 #const number_of_resources=1.
@@ -10,7 +10,7 @@ terrain(water; mountains; flatland).
 dim(0..width-1).
 map((X,Y)) :- dim(X), dim(Y).
 
-number_of_players { color(green;red;blue;yellow) } number_of_players.
+number_of_players { color(green;red) } number_of_players.
 empty(none, empty).
 resource(C, resource) :- color(C).
 player(C, player) :- color(C).
@@ -49,14 +49,30 @@ step(0,1).
 step(0,-1).
 step(1,0).
 step(-1,0).
+step(1,1).
+step(-1,-1).
+step(1,-1).
+step(-1,1).
+
+
 
 add((X, Y), (DX, DY), (X+DX, Y+DY))
   :- dim(X), dim(Y), step(DX, DY).
 
+
+
 adjacent(T1, T2, (DX,DY))
   :- add(T1, (DX,DY), T2).
 
+
 2 { at(R1, water) : adjacent(R1,R2,Direction)} 4:- at(R2,water).
+
+
+%players have atleast 1 non water terrain around them at the start
+:- tile(T1, player, C1), at(T2, water), 1{adjacent(T1,T2,Direction)}.
+
+2 { at(R1, water) : adjacent(R1,R2,Direction)} 4:- at(R2,water).
+
 
 %amount of each terrain
 :- not width*width/4 { at(T, water) } width*width/3.
@@ -66,5 +82,6 @@ move(C1,S,E) :- map(S),map(E),tile(S,player,C1),adjacent(S,E,Direction),not at(E
 
 0 { player : move(C1,S,E) }.
 
-
+#show tile/3.
+#show at/2.
 #show move/3.
