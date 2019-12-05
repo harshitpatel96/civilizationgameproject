@@ -1,4 +1,3 @@
-#const width=10.
 #const number_of_moves=4.
 #const number_of_players=2.
 #const number_of_resources=1.
