@@ -11,7 +11,6 @@ from random import randint
 from astropy.table import Table
 
 
-
 dictofmaps = dict()
 index = 0
 randomindex = 0
@@ -19,16 +18,16 @@ hiddenmap = None
 strm = None
 mapofworld = None
 probrand = 100000 # this is number of models which we want our asp to output 
-n = 0 # for randomness in map
+n = 0# for randomness in map
 listofn = [] # list to save indices of last five maps
 moves = {'red':[], 'green':[]}
 
 class Map:
-    def __init__(self):
-        self.size = 10
+    def __init__(self, mapsize):
+        self.size = mapsize
         self.solution = None
         ctl = clingo.Control()
-        ctl.load("NewMap.lp")
+        ctl.load("MAPs.lp")
         
         global n, listofn, probrand, randomindex
         n = randint(1, probrand)
@@ -80,7 +79,17 @@ class Map:
             
 
 def main():
-    Map()
+    mapsize = int(input('Enter map size: '))
+    f = open('mapgenerator.lp', 'r')
+    contents = f.read()
+    f.close()
+    f = open('MAPs.lp', 'w+')
+    f.write("#const width=" + str(mapsize) + '.\n')
+    f.close()
+    f = open('MAPs.lp', 'a')
+    f.write(contents)
+    f.close()
+    Map(mapsize)
 
     mowN = np.array([['None' for i in range(mapofworld.shape[0])] for j in range(mapofworld.shape[1])], dtype=object)
     playerpos = [(i, j) for i in range(mapofworld.shape[0]) for j in range(mapofworld.shape[1]) if 'player' in mapofworld[i, j]]
@@ -128,23 +137,26 @@ def main():
     hiddenmap = np.array([[str(mowN[i, j]) for i in range(mapofworld.shape[0])] for j in range(mapofworld.shape[1])])
     
     # Logic to print hidden map on screen in readable format
-    col = ' '
-    datatype = tuple('S25' for i in range(11))
-    for i in range(10):
-        col = col + str(i)
-    cols = tuple(i for i in col)
+    col = [' ']
+    for i in range(mapsize):
+        col.append(str(i))
+
+    cols = tuple(col)
+    
+    datatype = tuple('S25' for i in range(mapsize+1))
+
 
     rows = []
-    for i in range(10):
+    for i in range(mapsize):
         temp = []
-        for j in range(10):
+        for j in range(mapsize):
             if j == 0:
                 temp.append(str(i))
-            temp.append(hiddenmap[j, i])
+            temp.append(mapofworld[j, i])
         rows.append(tuple(temp))
     
     t = Table(names=cols, dtype=datatype)
-    for i in range(10):
+    for i in range(mapsize):
         t.add_row(rows[i])
     
     print("----------------------------------CURRENT MAP-----------------------------------")
