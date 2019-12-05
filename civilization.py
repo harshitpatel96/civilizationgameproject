@@ -27,7 +27,7 @@ class Map:
         self.size = mapsize
         self.solution = None
         ctl = clingo.Control()
-        ctl.load("MAPs.lp")
+        ctl.load("NewMap.lp")
         
         global n, listofn, probrand, randomindex
         n = randint(1, probrand)
