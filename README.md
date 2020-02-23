@@ -1,4 +1,4 @@
-#Civilization Game
+Civilization Game
 
 Creators: Harshit Patel(@hpatel24) and Sagar Bajaj(@sbajaj)
 
